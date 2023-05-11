@@ -1,0 +1,17 @@
+[package]
+name = "mc-mailer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-rt = "2.8.0"
+actix-web = "4.3.1"
+base64 = "0.21.0"
+chrono = "0.4.24"
+lettre = "0.10.4"
+lettre_email = "0.9.4"
+openssl = "0.10.52"
+serde = "1.0.162"
+serde_qs = "0.12.0"
