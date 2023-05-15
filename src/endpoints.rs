@@ -2,6 +2,7 @@ use chrono::Utc;
 use crate::secrets::*;
 use crate::verification::*;
 use crate::email::*;
+use crate::whitelist::*;
 use actix_web::{web, Responder, HttpResponse};
 
 pub async fn index() -> impl Responder {
@@ -46,7 +47,13 @@ pub async fn verify(path: web::Path<String>) -> impl Responder {
     if (receipt.valid) {
         return HttpResponse::Ok()
             .content_type("text/html; charset=utf-8")
-            .body(HTML_ON_EMAIL_VERIFIED_1.to_string() + &receipt.minecraft_username + HTML_ON_EMAIL_VERIFIED_2);
+            .body(
+                HTML_ON_EMAIL_VERIFIED_1.to_string() 
+                + &receipt.minecraft_username 
+                + HTML_ON_EMAIL_VERIFIED_2
+                + add_to_whitelist(&receipt.minecraft_username).await.unwrap().as_str()
+                + HTML_ON_EMAIL_VERIFIED_3
+            );
     } else {
         return HttpResponse::Ok()
             .content_type("text/html; charset=utf-8")

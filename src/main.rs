@@ -2,6 +2,7 @@ mod endpoints;
 mod secrets;
 mod verification;
 mod email;
+mod whitelist;
 
 use actix_web::{web, App, HttpServer};
 
