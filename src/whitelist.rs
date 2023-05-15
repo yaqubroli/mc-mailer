@@ -5,7 +5,7 @@ use async_std::prelude::*;
 use actix_rt::System;
 use crate::secrets::WHITELIST_SCRIPT_PATH;
 
-async fn add_to_whitelist(args: &str) -> Result<String, Error> {
+pub async fn add_to_whitelist(args: &str) -> Result<String, Error> {
     let mut child = Command::new("sh")
         .arg(WHITELIST_SCRIPT_PATH)
         .arg(args)
@@ -19,5 +19,5 @@ async fn add_to_whitelist(args: &str) -> Result<String, Error> {
     let output_text = String::from_utf8_lossy(&output.stdout).to_string();
     let error_text = String::from_utf8_lossy(&output.stderr).to_string();
 
-    Ok(format!("=== STDOUT ===\n{}\n\n== STDERR ==\n{}", output_text, error_text))
+    Ok(format!("==stdout==\n{}\n\n==stderr==\n{}", output_text, error_text))
 }
