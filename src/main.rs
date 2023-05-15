@@ -1,30 +1,20 @@
-use chrono::Utc;
-use lettre_email::EmailBuilder;
-use secrets::secrets::EMAIL_USERNAME;
-use crate::verification::verification::*;
-use crate::secrets::secrets::SPECIAL_SALT_CODE;
+mod endpoints;
+mod secrets;
+mod verification;
+mod email;
 
-pub mod verification;
-pub mod secrets;
+use actix_web::{web, App, HttpServer};
 
-async fn send_verification_email(verificationRequest: VerificationRequest, ) -> impl Responder {
-    let email = EmailBuilder::new()
-        .to(format("{}@st-andrews.ac.uk", verificationRequest.email))
-        .from(EMAIL_USERNAME)
-        .subject("Minecraft Verification")
-        .text(format!("Here's your whitelist verification link: https://mc.7800.io/verify/{}", verificationRequest.as_code()))
-        .build();
-}
-
-fn main() {
-    let verification_request = VerificationRequest {
-        minecraft_username: String::from("jacobroly"),
-        date: Utc::now(),
-        seed: 45343,
-    };
-    println!("Generated verification request: {:?}", verification_request);
-    let verification_code = verification_request.as_code();
-    println!("Generated verification code: {}", verification_code);
-    let verification_receipt = VerificationReceipt::from_code(verification_code);
-    println!("Generated verification receipt: {:?}", verification_receipt);
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(endpoints::index))
+            .route("/send-sta", web::post().to(endpoints::send_sta))
+            .route("/send-written", web::post().to(endpoints::send_written))
+            .route("/verify/{code}", web::get().to(endpoints::verify))
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }
